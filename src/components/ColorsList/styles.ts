@@ -38,7 +38,11 @@ export const ButtonContainer = styled.div`
   display: flex;
   justify-content: space-between;
   max-width: 400px;
+  column-gap: 8px;
   margin: 0 auto;
   margin-top: 16px;
-  padding: 0 16px;
+
+  .perPageInput {
+    max-width: 4rem;
+  }
 `
