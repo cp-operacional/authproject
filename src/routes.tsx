@@ -14,9 +14,11 @@ const PageRoutes = () => {
   useEffect(() => {
     const pathName = location.pathname
 
-    if (isAuthenticated && pathName === '/login') {
+    const isInLoginPage = pathName === '/login'
+
+    if (isAuthenticated && isInLoginPage) {
       navigate('/home', { replace: true })
-    } else if (!isAuthenticated && pathName !== '/login') {
+    } else if (!isAuthenticated && !isInLoginPage) {
       navigate('/login', { replace: true })
     }
   }, [isAuthenticated, location.pathname, navigate])
@@ -24,7 +26,7 @@ const PageRoutes = () => {
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
-      <Route path="/" element={<Login />} />
+      <Route path="/" element={<Home />} />
       <Route path="/home" element={<Home />} />
     </Routes>
   )
