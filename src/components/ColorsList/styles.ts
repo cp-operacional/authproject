@@ -1,22 +1,24 @@
 import styled from 'styled-components'
-import { List as MuiList, ListItem as MuiListItem } from '@mui/material'
 
-export const List = styled(MuiList)`
-  max-width: 600px;
+export const List = styled.ul`
+  max-width: 400px;
   margin: 0 auto;
   background-color: #fff;
   border-radius: 8px;
+  margin-top: 16px;
 `
 
 type ListItemProps = {
   $color: string
 }
 
-export const ListItem = styled(MuiListItem)<ListItemProps>`
+export const ListItem = styled.li<ListItemProps>`
   display: flex;
   justify-content: space-between;
   column-gap: 20px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  padding: 8px 16px;
 
   .content {
     display: flex;
@@ -35,7 +37,8 @@ export const ListItem = styled(MuiListItem)<ListItemProps>`
 export const ButtonContainer = styled.div`
   display: flex;
   justify-content: space-between;
-  max-width: 550px;
+  max-width: 400px;
   margin: 0 auto;
   margin-top: 16px;
+  padding: 0 16px;
 `
