@@ -1,10 +1,18 @@
-import React, { createContext, useState, ReactNode, FC, useMemo } from 'react'
+import React, {
+  createContext,
+  useState,
+  ReactNode,
+  FC,
+  useMemo,
+  useEffect
+} from 'react'
 
 type User = {
   id: number
   email: string
   first_name: string
   last_name: string
+  avatar: string
 }
 
 interface AuthContextType {
@@ -25,7 +33,20 @@ const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
     localStorage.getItem('token') || ''
   )
   const [user, setUser] = useState<User | null>(null)
+
   const isAuthenticated = useMemo(() => !!token, [token])
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      if (token) {
+        const res = await fetch('https://reqres.in/api/users/2')
+        const data = await res.json()
+        setUser(data.data)
+      }
+    }
+
+    fetchUser()
+  }, [token])
 
   const login = async (email: string, password: string) => {
     const res = await fetch('https://reqres.in/api/login/', {
@@ -44,11 +65,8 @@ const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
     if (res.status === 200) {
       localStorage.setItem('token', data.token)
       setToken(data.token)
-
-      const userRes = await fetch('https://reqres.in/api/users/2')
-      const userData = await userRes.json()
-      setUser(userData.data)
     } else {
+      localStorage.removeItem('token')
       setToken('')
       setUser(null)
       throw new Error(data.error)
@@ -58,6 +76,8 @@ const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
   const logout = () => {
     localStorage.removeItem('token')
     setToken('')
+    localStorage.removeItem('user')
+    setUser(null)
   }
 
   return (

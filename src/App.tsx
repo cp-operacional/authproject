@@ -1,18 +1,21 @@
 import { BrowserRouter } from 'react-router-dom'
 
 import PageRoutes from './routes'
-import { AuthProvider } from './contexts/AuthContext'
+
+import { useAuth } from './contexts/AuthContext'
+
+import Sidebar from './components/Sidebar'
 
 import { GlobalStyle } from './styles'
 
 function App() {
+  const { isAuthenticated } = useAuth()
   return (
-    <AuthProvider>
-      <BrowserRouter>
-        <GlobalStyle />
-        <PageRoutes />
-      </BrowserRouter>
-    </AuthProvider>
+    <BrowserRouter>
+      <GlobalStyle />
+      {isAuthenticated && <Sidebar />}
+      <PageRoutes />
+    </BrowserRouter>
   )
 }
 
