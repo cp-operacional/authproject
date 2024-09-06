@@ -1,15 +1,21 @@
 import { Typography } from '@mui/material'
 
+import { ColorsProvider } from '../../contexts/ColorsContext'
+
 import ColorsList from '../../components/ColorsList'
+
+import * as S from './styles'
 
 const Home = () => {
   return (
-    <div className="container">
-      <Typography variant="h3" textAlign={'center'}>
-        Home
-      </Typography>
-      <ColorsList />
-    </div>
+    <ColorsProvider>
+      <S.Container className="container">
+        <Typography variant="h4" textAlign={'center'}>
+          Lista de cores
+        </Typography>
+        <ColorsList />
+      </S.Container>
+    </ColorsProvider>
   )
 }
 
