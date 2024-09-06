@@ -1,6 +1,6 @@
-## Efood
+## authproject
 
-O **Efood** é uma plataforma online dedicada à entrega de alimentos, oferecendo aos usuários uma interface conveniente para explorar uma variedade de restaurantes e seus cardápios. Com um foco na praticidade e na experiência do usuário, o Efood permite que os clientes naveguem facilmente pelos restaurantes e realizem pedidos de forma rápida e intuitiva.
+O **authproject** é uma plataforma online dedicada à entrega de alimentos, oferecendo aos usuários uma interface conveniente para explorar uma variedade de restaurantes e seus cardápios. Com um foco na praticidade e na experiência do usuário, o authproject permite que os clientes naveguem facilmente pelos restaurantes e realizem pedidos de forma rápida e intuitiva.
 
 ### Tecnologias Utilizadas
 
@@ -12,7 +12,7 @@ O **Efood** é uma plataforma online dedicada à entrega de alimentos, oferecend
 
 ### Acesso ao Site
 
-Você pode acessar o site [aqui](https://efood-mvm.vercel.app).
+Você pode acessar o site [aqui](https://authproject-mvm.vercel.app).
 
 ## Inicializando o Projeto com Create React App
 
