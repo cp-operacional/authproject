@@ -5,7 +5,6 @@ export const List = styled.ul`
   margin: 0 auto;
   background-color: #fff;
   border-radius: 8px;
-  margin-top: 16px;
 `
 
 type ListItemProps = {
@@ -20,10 +19,39 @@ export const ListItem = styled.li<ListItemProps>`
   border-radius: 8px;
   padding: 8px 16px;
 
+  &:hover {
+    .trashIcon {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
   .content {
     display: flex;
     flex-direction: column;
     row-gap: 4px;
+  }
+
+  .itemHeader {
+    display: flex;
+    align-items: center;
+    column-gap: 4px;
+  }
+
+  .trashIcon {
+    font-size: 24px;
+    color: #ffffff;
+    background-color: #1976d2;
+    border-radius: 50%;
+    margin-left: 4px;
+    padding: 4px;
+
+    transform: translateX(-10px);
+    opacity: 0;
+
+    transition: all 0.5s;
+
+    cursor: pointer;
   }
 
   .color {
@@ -36,11 +64,10 @@ export const ListItem = styled.li<ListItemProps>`
 
 export const ButtonContainer = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   max-width: 400px;
   column-gap: 8px;
-  margin: 0 auto;
-  margin-top: 16px;
+  margin: 16px auto;
 
   .perPageInput {
     max-width: 4rem;
