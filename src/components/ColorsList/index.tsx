@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { Button, TextField } from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete'
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward'
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward'
 
 import { AddColorPU } from '../AddColorPU'
 import { useColors } from '../../contexts/ColorsContext'
@@ -14,7 +16,8 @@ const ColorsList = () => {
     perPage,
     setPerPage,
     totalPages,
-    deleteColor
+    deleteColor,
+    moveColor
   } = useColors()
 
   const [page, setPage] = useState(1)
@@ -40,6 +43,17 @@ const ColorsList = () => {
     setPage(1)
   }
 
+  const isFirstColorId = (id: number) => id === colorsList[0].data[0].id
+
+  const isLastColorId = (id: number) => {
+    return (
+      id ===
+      colorsList[colorsList.length - 1].data[
+        colorsList[colorsList.length - 1].data.length - 1
+      ].id
+    )
+  }
+
   return (
     <section>
       <S.ButtonContainer>
@@ -51,16 +65,36 @@ const ColorsList = () => {
             <S.ListItem key={color.id} $color={color.color}>
               <div className="content">
                 <div className="itemHeader">
-                  <p>{color.name}</p>
+                  <p className="name">{color.name}</p>
                   <DeleteIcon
                     className="trashIcon"
                     onClick={() => deleteColor(color.id)}
                   />
                 </div>
-                <p>{color.pantone_value}</p>
-                <p>{color.year}</p>
+                <p className="pantone">{color.pantone_value}</p>
+                <p className="year">{color.year}</p>
               </div>
-              <span className="color" />
+              <div className="right">
+                <span className="color" />
+                <div className="movingButtonContainer">
+                  <Button
+                    className="movingButton"
+                    onClick={() => moveColor(color.id, 'up')}
+                    disabled={isFirstColorId(color.id)}
+                    color="primary"
+                  >
+                    <ArrowUpwardIcon />
+                  </Button>
+                  <Button
+                    className="movingButton"
+                    onClick={() => moveColor(color.id, 'down')}
+                    disabled={isLastColorId(color.id)}
+                    color="primary"
+                  >
+                    <ArrowDownwardIcon />
+                  </Button>
+                </div>
+              </div>
             </S.ListItem>
           ))}
         </S.List>
@@ -77,7 +111,7 @@ const ColorsList = () => {
         <TextField
           className="perPageInput"
           type="number"
-          value={newPerPage}
+          value={newPerPage == 0 ? 1 : newPerPage}
           onChange={handlePerPageChange}
           variant="outlined"
           size="small"
