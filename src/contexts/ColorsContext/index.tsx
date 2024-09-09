@@ -8,6 +8,7 @@ interface ColorsContextType {
   totalPages: number
   addColor: (color: ColorWithoutId) => void
   deleteColor: (id: number) => void
+  moveColor: (id: number, direction: 'up' | 'down') => void
 }
 
 const ColorsContext = createContext<ColorsContextType | undefined>(undefined)
@@ -92,6 +93,20 @@ const ColorsProvider: FC<ColorsProviderProps> = ({ children }) => {
     setColors((prev) => prev.filter((color) => color.id !== id))
   }
 
+  const moveColor = (id: number, direction: 'up' | 'down') => {
+    const index = colors.findIndex((color) => color.id === id)
+    if (index === -1) return
+
+    const newIndex = direction === 'up' ? index - 1 : index + 1
+    if (newIndex < 0 || newIndex >= colors.length) return
+
+    const newColors = [...colors]
+    newColors[index] = colors[newIndex]
+    newColors[newIndex] = colors[index]
+
+    setColors(newColors)
+  }
+
   return (
     <ColorsContext.Provider
       value={{
@@ -101,7 +116,8 @@ const ColorsProvider: FC<ColorsProviderProps> = ({ children }) => {
         setPerPage,
         totalPages,
         addColor,
-        deleteColor
+        deleteColor,
+        moveColor
       }}
     >
       {children}
