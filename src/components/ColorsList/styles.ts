@@ -30,16 +30,26 @@ export const ListItem = styled.li<ListItemProps>`
     display: flex;
     flex-direction: column;
     row-gap: 4px;
-  }
 
-  .itemHeader {
-    display: flex;
-    align-items: center;
-    column-gap: 4px;
+    .itemHeader {
+      display: flex;
+      align-items: center;
+      column-gap: 4px;
+
+      .name {
+        font-size: 18px;
+        font-weight: bold;
+      }
+    }
+
+    .pantone,
+    .year {
+      font-size: 12px;
+    }
   }
 
   .trashIcon {
-    font-size: 24px;
+    font-size: 20px;
     color: #ffffff;
     background-color: #1976d2;
     border-radius: 50%;
@@ -54,11 +64,29 @@ export const ListItem = styled.li<ListItemProps>`
     cursor: pointer;
   }
 
-  .color {
-    width: 70px;
-    height: 70px;
-    border-radius: 50%;
-    background-color: ${({ $color }) => $color};
+  .right {
+    display: flex;
+    align-items: center;
+    column-gap: 8px;
+
+    .color {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      background-color: ${({ $color }) => $color};
+    }
+
+    .movingButtonContainer {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 70%;
+
+      .movingButton {
+        width: 5px;
+        height: 5px;
+      }
+    }
   }
 `
 
