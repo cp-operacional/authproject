@@ -1,4 +1,5 @@
 import styled from '@emotion/styled'
+import { breakpoints } from '../../styles'
 
 export const Container = styled.aside`
   position: fixed;
@@ -7,6 +8,7 @@ export const Container = styled.aside`
   max-width: 250px;
   width: 100%;
   height: 100vh;
+  z-index: 10;
 
   display: flex;
   flex-direction: column;
@@ -37,5 +39,31 @@ export const Container = styled.aside`
 
   .userName {
     display: flex;
+  }
+
+  @media (max-width: ${breakpoints.desktop}) {
+    top: auto;
+    bottom: 0;
+    left: 0;
+    max-width: 100%;
+    width: 100%;
+    height: 64px;
+    flex-direction: row;
+    padding: 16px 10%;
+
+    .userData {
+      flex-direction: row;
+      column-gap: 8px;
+    }
+
+    .email {
+      display: none;
+    }
+
+    .avatar {
+      width: 48px;
+      height: 48px;
+      margin-bottom: 0px;
+    }
   }
 `
