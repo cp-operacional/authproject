@@ -17,10 +17,11 @@ export const ListItem = styled.li<ListItemProps>`
   column-gap: 20px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.2);
   border-radius: 8px;
-  padding: 8px 16px;
+  padding: 8px 16px 8px 0px;
 
   &:hover {
-    .trashIcon {
+    .trashIcon,
+    .editIcon {
       opacity: 1;
       transform: translateX(0);
     }
@@ -28,8 +29,18 @@ export const ListItem = styled.li<ListItemProps>`
 
   .content {
     display: flex;
-    flex-direction: column;
-    row-gap: 4px;
+
+    .colorDescription {
+      display: flex;
+      flex-direction: column;
+      row-gap: 4px;
+    }
+
+    .colorButtonsContainer {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
 
     .itemHeader {
       display: flex;
@@ -39,6 +50,7 @@ export const ListItem = styled.li<ListItemProps>`
       .name {
         font-size: 18px;
         font-weight: bold;
+        text-transform: capitalize;
       }
     }
 
@@ -46,22 +58,55 @@ export const ListItem = styled.li<ListItemProps>`
     .year {
       font-size: 12px;
     }
+
+    .nameInput,
+    .pantoneInput,
+    .yearInput {
+      width: 80%;
+      font-size: 16px;
+      border: none;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+      padding: 2px 4px;
+    }
+
+    .pantoneInput,
+    .yearInput {
+      font-size: 12px;
+    }
   }
 
-  .trashIcon {
+  .trashIcon,
+  .editIcon,
+  .checkIcon,
+  .cancelIcon {
     font-size: 20px;
     color: #ffffff;
     background-color: #1976d2;
     border-radius: 50%;
-    margin-left: 4px;
     padding: 4px;
 
-    transform: translateX(-10px);
+    transform: translateX(10px);
     opacity: 0;
 
     transition: all 0.5s;
 
     cursor: pointer;
+  }
+
+  .disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+
+  .trashIcon,
+  .cancelIcon {
+    background-color: #ea3f38;
+  }
+
+  .cancelIcon,
+  .checkIcon {
+    opacity: 1;
+    transform: translateX(0);
   }
 
   .right {
@@ -70,10 +115,29 @@ export const ListItem = styled.li<ListItemProps>`
     column-gap: 8px;
 
     .color {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
       width: 70px;
       height: 70px;
       border-radius: 50%;
       background-color: ${({ $color }) => $color};
+
+      .hexColorInput {
+        max-width: 90%;
+        width: 100%;
+        padding: 2px 4px;
+        border: none;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+        border-radius: 4px;
+        font-size: 12px;
+      }
+
+      .error {
+        border: 1px solid red;
+        outline: none;
+      }
     }
 
     .movingButtonContainer {
@@ -85,6 +149,7 @@ export const ListItem = styled.li<ListItemProps>`
       .movingButton {
         width: 5px;
         height: 5px;
+        margin-left: 8px;
       }
     }
   }

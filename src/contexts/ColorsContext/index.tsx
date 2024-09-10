@@ -9,6 +9,7 @@ interface ColorsContextType {
   addColor: (color: ColorWithoutId) => void
   deleteColor: (id: number) => void
   moveColor: (id: number, direction: 'up' | 'down') => void
+  editColor: (id: number, color: ColorWithoutId) => void
 }
 
 const ColorsContext = createContext<ColorsContextType | undefined>(undefined)
@@ -17,7 +18,7 @@ interface ColorsProviderProps {
   children: ReactNode
 }
 
-type ColorsType = {
+export type ColorsType = {
   id: number
   name: string
   year: number
@@ -107,6 +108,20 @@ const ColorsProvider: FC<ColorsProviderProps> = ({ children }) => {
     setColors(newColors)
   }
 
+  const editColor = (id: number, color: ColorWithoutId) => {
+    setColors((prev) =>
+      prev.map((c) => {
+        if (c.id === id) {
+          return {
+            ...c,
+            ...color
+          }
+        }
+        return c
+      })
+    )
+  }
+
   return (
     <ColorsContext.Provider
       value={{
@@ -117,7 +132,8 @@ const ColorsProvider: FC<ColorsProviderProps> = ({ children }) => {
         totalPages,
         addColor,
         deleteColor,
-        moveColor
+        moveColor,
+        editColor
       }}
     >
       {children}
