@@ -29,27 +29,36 @@ interface AuthProviderProps {
 }
 
 const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
-  const [token, setToken] = useState<string>(
-    localStorage.getItem('token') || ''
+  const [accessToken, setAccessToken] = useState<string>(
+    localStorage.getItem('access') || ''
+  )
+  const [refreshToken, setRefreshToken] = useState<string>(
+    localStorage.getItem('refresh') || ''
   )
   const [user, setUser] = useState<User | null>(null)
 
-  const isAuthenticated = useMemo(() => !!token, [token])
+  const isAuthenticated = useMemo(() => !!accessToken, [accessToken])
 
   useEffect(() => {
     const fetchUser = async () => {
-      if (token) {
-        const res = await fetch('https://reqres.in/api/users/2')
+      if (accessToken) {
+        const res = await fetch('http://127.0.0.1:8000/auth/users/me/', {
+          headers: {
+            Authorization: `Bearer ${accessToken}`
+          }
+        })
         const data = await res.json()
-        setUser(data.data)
+        setUser(data)
+
+        console.log(data)
       }
     }
 
     fetchUser()
-  }, [token])
+  }, [accessToken])
 
   const login = async (email: string, password: string) => {
-    const res = await fetch('https://reqres.in/api/login/', {
+    const res = await fetch('http://127.0.0.1:8000/api/token/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -62,20 +71,28 @@ const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
 
     const data = await res.json()
 
+    console.log(data)
+
     if (res.status === 200) {
-      localStorage.setItem('token', data.token)
-      setToken(data.token)
+      localStorage.setItem('access', data.access)
+      setAccessToken(data.access)
+      localStorage.setItem('refresh', data.refresh)
+      setRefreshToken(data.refresh)
     } else {
-      localStorage.removeItem('token')
-      setToken('')
+      localStorage.removeItem('access')
+      setAccessToken('')
+      localStorage.removeItem('refresh')
+      setRefreshToken('')
       setUser(null)
       throw new Error(data.error)
     }
   }
 
   const logout = () => {
-    localStorage.removeItem('token')
-    setToken('')
+    localStorage.removeItem('access')
+    setAccessToken('')
+    localStorage.removeItem('refresh')
+    setRefreshToken('')
     localStorage.removeItem('user')
     setUser(null)
   }
