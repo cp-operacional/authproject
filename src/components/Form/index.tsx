@@ -34,11 +34,9 @@ const Form = () => {
       setErrorMessage('')
       await login(email, password)
     } catch (error) {
-      if (error instanceof Error) {
-        setErrorMessage(error.message)
-      } else {
-        setErrorMessage('Unknown error')
-      }
+      error instanceof Error
+        ? setErrorMessage(error.message)
+        : setErrorMessage('Unknown error')
       setHasError(true)
     }
 
