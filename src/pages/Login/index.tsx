@@ -1,9 +1,9 @@
-import Form from '../../components/Form'
+import LoginForm from '../../components/LoginForm'
 
 const Login = () => {
   return (
     <div className="container">
-      <Form />
+      <LoginForm />
     </div>
   )
 }

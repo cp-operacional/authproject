@@ -5,24 +5,29 @@ import {
   InputAdornment,
   Typography,
   FormControl,
-  InputLabel
+  InputLabel,
+  Alert
 } from '@mui/material'
 import Visibility from '@mui/icons-material/Visibility'
 import VisibilityOff from '@mui/icons-material/VisibilityOff'
 
 import { useAuth } from '../../contexts/AuthContext'
+import { useNavigate } from 'react-router-dom'
 
 import * as S from './styles'
 
-const Form = () => {
+const RegistrationForm = () => {
+  const navigate = useNavigate()
+  const [firstName, setFirstName] = useState('')
+  const [lastName, setLastName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [hasError, setHasError] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
+  const [hasSuccess, setHasSuccess] = useState(false)
   const [isRequesting, setIsRequesting] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
-
-  const { login } = useAuth()
+  const [count, setCount] = useState(5)
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault()
@@ -32,7 +37,27 @@ const Form = () => {
     try {
       setHasError(false)
       setErrorMessage('')
-      await login(email, password)
+
+      const response = await fetch('http://127.0.0.1:8000/auth/users/', {
+        method: 'POST',
+        body: JSON.stringify({
+          first_name: firstName,
+          last_name: lastName,
+          email: email,
+          password: password
+        }),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        console.log(data)
+        setHasSuccess(true)
+        setCount(5)
+        handleRedirect()
+      }
     } catch (error) {
       error instanceof Error
         ? setErrorMessage(error.message)
@@ -51,23 +76,73 @@ const Form = () => {
     setPassword(e.target.value)
   }
 
+  const handleOnChangeFirstName = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFirstName(e.target.value)
+  }
+
+  const handleOnChangeLastName = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setLastName(e.target.value)
+  }
+
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword)
+  }
+
+  const handleRedirect = () => {
+    const countdownInterval = setInterval(() => {
+      setCount((prevCount) => {
+        if (prevCount <= 1) {
+          clearInterval(countdownInterval)
+          navigate('/login', { replace: true })
+          return 0
+        }
+        return prevCount - 1
+      })
+    }, 1000)
   }
 
   return (
     <S.Container>
       {hasError && <S.ErrorBox severity="error">{errorMessage}</S.ErrorBox>}
+      {hasSuccess && (
+        <Alert severity="success">
+          Usuário criado com sucesso! Você está sendo redirecionado para a
+          pagina de login em {count} segundos...
+        </Alert>
+      )}
 
       <S.FormContainer onSubmit={onSubmit}>
-        <Typography variant="h4">Login</Typography>
+        <Typography variant="h4">Cadastro</Typography>
+        <S.TextField
+          value={firstName}
+          onChange={handleOnChangeFirstName}
+          type="text"
+          label="Nome"
+          variant="outlined"
+          autoComplete="new-password"
+          inputProps={{ maxLength: 150 }}
+          fullWidth
+          required
+        />
+        <S.TextField
+          value={lastName}
+          onChange={handleOnChangeLastName}
+          type="text"
+          label="Sobrenome"
+          variant="outlined"
+          autoComplete="new-password"
+          inputProps={{ maxLength: 150 }}
+          fullWidth
+          required
+        />
         <S.TextField
           value={email}
           onChange={handleOnChangeEmail}
           type="email"
           label="E-mail"
           variant="outlined"
-          autoComplete="email"
+          autoComplete="new-password"
+          inputProps={{ maxLength: 255 }}
           fullWidth
           required
         />
@@ -78,7 +153,7 @@ const Form = () => {
             type={showPassword ? 'text' : 'password'}
             value={password}
             onChange={handleOnChangePassword}
-            autoComplete="current-password"
+            autoComplete="new-password"
             endAdornment={
               <InputAdornment position="end">
                 <IconButton
@@ -101,4 +176,4 @@ const Form = () => {
   )
 }
 
-export default Form
+export default RegistrationForm
