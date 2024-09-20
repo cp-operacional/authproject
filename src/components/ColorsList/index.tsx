@@ -1,10 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Button, TextField, IconButton } from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
 import CheckIcon from '@mui/icons-material/Check'
 import CancelIcon from '@mui/icons-material/Cancel'
-import { Cancel } from '@mui/icons-material'
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward'
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward'
 
@@ -14,55 +13,34 @@ import { ColorWithoutId, useColors } from '../../contexts/ColorsContext'
 import * as S from './styles'
 
 const ColorsList = () => {
-  const {
-    fetchColors,
-    colorsList,
-    perPage,
-    setPerPage,
-    totalPages,
-    deleteColor,
-    moveColor,
-    editColor
-  } = useColors()
+  const { pageData, deleteColor, editColor, page, setPage } = useColors()
 
-  const [page, setPage] = useState(1)
-  const [newPerPage, setNewPerPage] = useState<number>(perPage)
   const [indexColorEditing, setIndexColorEditing] = useState<number>()
   const [newColor, setNewColor] = useState<ColorWithoutId>()
   const [hexColorError, setHexColorError] = useState(false)
 
-  useEffect(() => {
-    fetchColors()
-  }, [])
+  const handlePreviousPage = () => setPage(page - 1)
 
-  const currentPageData = colorsList.find((pageData) => pageData.page === page)
-
-  const handlePreviousPage = () => setPage((prev) => prev - 1)
-
-  const handleNextPage = () => setPage((prev) => prev + 1)
+  const handleNextPage = () => setPage(page + 1)
 
   const handlePerPageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(event.target.value, 10)
-    setNewPerPage(value)
   }
 
   const isFirstPage = page <= 1
 
-  const isLastPage = page >= totalPages
+  const isLastPage = pageData?.next === null
 
   const applyPerPageChange = () => {
-    setPerPage(newPerPage)
     setPage(1)
   }
 
-  const isFirstColorId = (id: number) => id === colorsList[0].data[0].id
+  const isFirstColorId = (id: number) => id === pageData?.results[0].id
 
   const isLastColorId = (id: number) => {
     return (
-      id ===
-      colorsList[colorsList.length - 1].data[
-        colorsList[colorsList.length - 1].data.length - 1
-      ].id
+      pageData?.next === null &&
+      id === pageData?.results[pageData.results.length - 1].id
     )
   }
 
@@ -70,7 +48,7 @@ const ColorsList = () => {
 
   const handleStartEditing = (id: number) => {
     setIndexColorEditing(id)
-    setNewColor(currentPageData?.data.find((color) => color.id === id))
+    setNewColor(pageData?.results.find((color) => color.id === id))
     setHexColorError(false)
   }
 
@@ -130,9 +108,9 @@ const ColorsList = () => {
       <S.ButtonContainer>
         <AddColorPU />
       </S.ButtonContainer>
-      {currentPageData && (
+      {pageData && (
         <S.List>
-          {currentPageData.data.map((color) => (
+          {pageData?.results.map((color) => (
             <S.ListItem key={color.id} $color={color.color}>
               <div className="content">
                 <div className="colorButtonsContainer">
@@ -219,7 +197,7 @@ const ColorsList = () => {
                 <div className="movingButtonContainer">
                   <IconButton
                     className="movingButton"
-                    onClick={() => moveColor(color.id, 'up')}
+                    // onClick={() => moveColor(color.id, 'up')}
                     disabled={isFirstColorId(color.id)}
                     color="primary"
                   >
@@ -227,7 +205,7 @@ const ColorsList = () => {
                   </IconButton>
                   <IconButton
                     className="movingButton"
-                    onClick={() => moveColor(color.id, 'down')}
+                    // onClick={() => moveColor(color.id, 'down')}
                     disabled={isLastColorId(color.id)}
                     color="primary"
                   >
@@ -251,7 +229,7 @@ const ColorsList = () => {
         <TextField
           className="perPageInput"
           type="number"
-          value={newPerPage == 0 ? 1 : newPerPage}
+          // value={newPerPage == 0 ? 1 : newPerPage}
           onChange={handlePerPageChange}
           variant="outlined"
           size="small"

@@ -49,8 +49,6 @@ const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
         })
         const data = await res.json()
         setUser(data)
-
-        console.log(data)
       }
     }
 
@@ -70,8 +68,6 @@ const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
     })
 
     const data = await res.json()
-
-    console.log(data)
 
     if (res.status === 200) {
       localStorage.setItem('access', data.access)
