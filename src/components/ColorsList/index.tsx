@@ -13,7 +13,8 @@ import { ColorWithoutId, useColors } from '../../contexts/ColorsContext'
 import * as S from './styles'
 
 const ColorsList = () => {
-  const { pageData, deleteColor, editColor, page, setPage } = useColors()
+  const { pageData, deleteColor, editColor, moveColor, page, setPage } =
+    useColors()
 
   const [indexColorEditing, setIndexColorEditing] = useState<number>()
   const [newColor, setNewColor] = useState<ColorWithoutId>()
@@ -197,7 +198,7 @@ const ColorsList = () => {
                 <div className="movingButtonContainer">
                   <IconButton
                     className="movingButton"
-                    // onClick={() => moveColor(color.id, 'up')}
+                    onClick={() => moveColor(color.id, 'up')}
                     disabled={isFirstColorId(color.id)}
                     color="primary"
                   >
@@ -205,7 +206,7 @@ const ColorsList = () => {
                   </IconButton>
                   <IconButton
                     className="movingButton"
-                    // onClick={() => moveColor(color.id, 'down')}
+                    onClick={() => moveColor(color.id, 'down')}
                     disabled={isLastColorId(color.id)}
                     color="primary"
                   >

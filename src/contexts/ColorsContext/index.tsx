@@ -7,6 +7,7 @@ interface ColorsContextType {
   addColor: (color: ColorWithoutId) => void
   deleteColor: (id: number) => void
   editColor: (id: number, color: ColorWithoutId) => void
+  moveColor: (id: number, direction: 'up' | 'down') => void
 }
 
 const ColorsContext = createContext<ColorsContextType | undefined>(undefined)
@@ -85,7 +86,7 @@ const ColorsProvider: FC<ColorsProviderProps> = ({ children }) => {
       if (!res.ok) {
         throw new Error('Falha ao adicionar cor')
       }
-      await fetchPageData() // Atualiza a lista após adicionar
+      await fetchPageData()
     } catch (error) {
       console.error('Erro ao adicionar cor:', error)
     }
@@ -108,25 +109,43 @@ const ColorsProvider: FC<ColorsProviderProps> = ({ children }) => {
       if (!res.ok) {
         throw new Error('Falha ao excluir cor')
       }
-      await fetchPageData() // Atualiza a lista após excluir
+      await fetchPageData()
     } catch (error) {
       console.error('Erro ao excluir cor:', error)
     }
   }
 
-  // const moveColor = (id: number, direction: 'up' | 'down') => {
-  //   const index = colors.findIndex((color) => color.id === id)
-  //   if (index === -1) return
+  const moveColor = async (id: number, direction: 'up' | 'down') => {
+    try {
+      const accessToken = localStorage.getItem('access')
+      if (!accessToken) {
+        throw new Error('Token de acesso não encontrado')
+      }
 
-  //   const newIndex = direction === 'up' ? index - 1 : index + 1
-  //   if (newIndex < 0 || newIndex >= colors.length) return
+      const endpoint = direction === 'up' ? 'move_up' : 'move_down'
+      const res = await fetch(
+        `http://127.0.0.1:8000/resources/${id}/${endpoint}/`,
+        {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${accessToken}`
+          }
+        }
+      )
 
-  //   const newColors = [...colors]
-  //   newColors[index] = colors[newIndex]
-  //   newColors[newIndex] = colors[index]
-
-  //   setColors(newColors)
-  // }
+      if (!res.ok) {
+        throw new Error(
+          `Falha ao mover cor para ${direction === 'up' ? 'cima' : 'baixo'}`
+        )
+      }
+      await fetchPageData()
+    } catch (error) {
+      console.error(
+        `Erro ao mover cor para ${direction === 'up' ? 'cima' : 'baixo'}:`,
+        error
+      )
+    }
+  }
 
   const editColor = async (id: number, color: ColorWithoutId) => {
     try {
@@ -147,7 +166,7 @@ const ColorsProvider: FC<ColorsProviderProps> = ({ children }) => {
       if (!res.ok) {
         throw new Error('Falha ao editar cor')
       }
-      await fetchPageData() // Atualiza a lista após editar
+      await fetchPageData()
     } catch (error) {
       console.error('Erro ao editar cor:', error)
     }
@@ -161,7 +180,8 @@ const ColorsProvider: FC<ColorsProviderProps> = ({ children }) => {
         pageData,
         addColor,
         deleteColor,
-        editColor
+        editColor,
+        moveColor
       }}
     >
       {children}
