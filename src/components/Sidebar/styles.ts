@@ -32,6 +32,38 @@ export const Container = styled.aside`
     margin-bottom: 8px;
   }
 
+  .avatar-container {
+    position: relative;
+  }
+
+  .avatar-overlay {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 128px;
+    height: 128px;
+    transition: all 0.5s ease;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+
+  .avatar-overlay:hover {
+    background-color: rgba(0, 0, 0, 0.2);
+  }
+
+  .avatar-overlay img {
+    width: 32px;
+    height: 32px;
+    opacity: 0;
+    transition: all 0.5s ease;
+    cursor: pointer;
+  }
+
+  .avatar-overlay:hover img {
+    opacity: 1;
+  }
+
   .email {
     font-size: 8px;
     margin-bottom: 4px;
