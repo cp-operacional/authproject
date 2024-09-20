@@ -7,9 +7,9 @@ import {
   DialogTitle,
   TextField
 } from '@mui/material'
-import React, { useState } from 'react'
+import React from 'react'
 
-import { ColorWithoutId, useColors } from '../../contexts/ColorsContext'
+import { useColors } from '../../contexts/ColorsContext'
 
 export const AddColorPU = () => {
   const { addColor } = useColors()
