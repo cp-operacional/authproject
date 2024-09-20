@@ -1,4 +1,5 @@
 import { FormEvent, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import {
   Button,
   IconButton,
@@ -10,9 +11,6 @@ import {
 } from '@mui/material'
 import Visibility from '@mui/icons-material/Visibility'
 import VisibilityOff from '@mui/icons-material/VisibilityOff'
-
-import { useAuth } from '../../contexts/AuthContext'
-import { useNavigate } from 'react-router-dom'
 
 import * as S from './styles'
 
@@ -86,6 +84,10 @@ const RegistrationForm = () => {
 
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword)
+  }
+
+  const handleOnClickLogin = () => {
+    navigate('/login')
   }
 
   const handleRedirect = () => {
@@ -170,6 +172,14 @@ const RegistrationForm = () => {
         </FormControl>
         <Button type="submit" variant="contained" disabled={isRequesting}>
           Enviar
+        </Button>
+        <Button
+          type="button"
+          variant="text"
+          disabled={isRequesting}
+          onClick={handleOnClickLogin}
+        >
+          Já tem uma Conta? Entre!
         </Button>
       </S.FormContainer>
     </S.Container>
