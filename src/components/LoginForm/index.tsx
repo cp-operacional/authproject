@@ -1,4 +1,5 @@
 import { FormEvent, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import {
   Button,
   IconButton,
@@ -21,6 +22,8 @@ const LoginForm = () => {
   const [errorMessage, setErrorMessage] = useState('')
   const [isRequesting, setIsRequesting] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
+
+  const navigate = useNavigate()
 
   const { login } = useAuth()
 
@@ -53,6 +56,10 @@ const LoginForm = () => {
 
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword)
+  }
+
+  const handleOnClickRegister = () => {
+    navigate('/register')
   }
 
   return (
@@ -95,6 +102,14 @@ const LoginForm = () => {
         </FormControl>
         <Button type="submit" variant="contained" disabled={isRequesting}>
           Enviar
+        </Button>
+        <Button
+          type="button"
+          variant="text"
+          disabled={isRequesting}
+          onClick={handleOnClickRegister}
+        >
+          Não tem conta? Crie uma!
         </Button>
       </S.FormContainer>
     </S.Container>
