@@ -13,12 +13,21 @@ import { ColorWithoutId, useColors } from '../../contexts/ColorsContext'
 import * as S from './styles'
 
 const ColorsList = () => {
-  const { pageData, deleteColor, editColor, moveColor, page, setPage } =
-    useColors()
+  const {
+    pageData,
+    deleteColor,
+    editColor,
+    moveColor,
+    page,
+    setPage,
+    perPage,
+    setPerPage
+  } = useColors()
 
   const [indexColorEditing, setIndexColorEditing] = useState<number>()
   const [newColor, setNewColor] = useState<ColorWithoutId>()
   const [hexColorError, setHexColorError] = useState(false)
+  const [newPerPage, setNewPerPage] = useState(perPage)
 
   const handlePreviousPage = () => setPage(page - 1)
 
@@ -26,6 +35,7 @@ const ColorsList = () => {
 
   const handlePerPageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(event.target.value, 10)
+    setNewPerPage(value > 0 ? value : 1)
   }
 
   const isFirstPage = page <= 1
@@ -33,6 +43,7 @@ const ColorsList = () => {
   const isLastPage = pageData?.next === null
 
   const applyPerPageChange = () => {
+    setPerPage(newPerPage)
     setPage(1)
   }
 
@@ -230,10 +241,11 @@ const ColorsList = () => {
         <TextField
           className="perPageInput"
           type="number"
-          // value={newPerPage == 0 ? 1 : newPerPage}
+          value={newPerPage}
           onChange={handlePerPageChange}
           variant="outlined"
           size="small"
+          inputProps={{ min: 1 }}
         />
         <Button onClick={applyPerPageChange} variant="text">
           Aplicar
