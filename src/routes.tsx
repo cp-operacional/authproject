@@ -5,6 +5,7 @@ import { useAuth } from './contexts/AuthContext'
 
 import Login from './pages/Login'
 import Home from './pages/Home'
+import Registration from './pages/Registration'
 
 const PageRoutes = () => {
   const location = useLocation()
@@ -15,10 +16,11 @@ const PageRoutes = () => {
     const pathName = location.pathname
 
     const isInLoginPage = pathName === '/login'
+    const isHome = pathName === '/home'
 
     if (isAuthenticated && isInLoginPage) {
       navigate('/home', { replace: true })
-    } else if (!isAuthenticated && !isInLoginPage) {
+    } else if (!isAuthenticated && isHome) {
       navigate('/login', { replace: true })
     }
   }, [isAuthenticated, location.pathname, navigate])
@@ -28,6 +30,9 @@ const PageRoutes = () => {
       <Route path="/login" element={<Login />} />
       <Route path="/" element={<Home />} />
       <Route path="/home" element={<Home />} />
+      {!isAuthenticated && (
+        <Route path="/registration" element={<Registration />} />
+      )}
     </Routes>
   )
 }
