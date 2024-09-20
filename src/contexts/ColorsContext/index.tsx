@@ -4,6 +4,8 @@ interface ColorsContextType {
   page: number
   setPage: (n: number) => void
   pageData: PageDataType | undefined
+  perPage: number
+  setPerPage: (n: number) => void
   addColor: (color: ColorWithoutId) => void
   deleteColor: (id: number) => void
   editColor: (id: number, color: ColorWithoutId) => void
@@ -36,6 +38,7 @@ export type PageDataType = {
 const ColorsProvider: FC<ColorsProviderProps> = ({ children }) => {
   const [pageData, setPageData] = useState<PageDataType>()
   const [page, setPage] = useState(1)
+  const [perPage, setPerPage] = useState(5)
 
   const fetchPageData = async () => {
     try {
@@ -44,11 +47,14 @@ const ColorsProvider: FC<ColorsProviderProps> = ({ children }) => {
         throw new Error('Token de acesso não encontrado')
       }
 
-      const res = await fetch(`http://127.0.0.1:8000/resources/?page=${page}`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`
+      const res = await fetch(
+        `http://127.0.0.1:8000/resources/?page=${page}&page_size=${perPage}`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`
+          }
         }
-      })
+      )
 
       if (!res.ok) {
         throw new Error('Falha ao buscar cores')
@@ -65,7 +71,7 @@ const ColorsProvider: FC<ColorsProviderProps> = ({ children }) => {
 
   useEffect(() => {
     fetchPageData()
-  }, [page])
+  }, [page, perPage])
 
   const addColor = async (color: ColorWithoutId) => {
     try {
@@ -177,6 +183,8 @@ const ColorsProvider: FC<ColorsProviderProps> = ({ children }) => {
       value={{
         page,
         setPage,
+        perPage,
+        setPerPage,
         pageData,
         addColor,
         deleteColor,
