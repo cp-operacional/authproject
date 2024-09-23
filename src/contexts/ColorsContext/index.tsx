@@ -49,7 +49,6 @@ const ColorsProvider: FC<ColorsProviderProps> = ({ children }) => {
       )
       const fetchedData: PageDataType = await res.json()
       setPageData(fetchedData)
-      console.log(fetchedData)
     } catch (error) {
       console.error('Erro ao buscar dados:', error)
     }
