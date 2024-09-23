@@ -24,6 +24,10 @@ export const Container = styled.aside`
     text-align: center;
   }
 
+  .fileInput {
+    display: none;
+  }
+
   .avatar {
     border-radius: 50%;
     width: 128px;
@@ -66,4 +70,48 @@ export const Container = styled.aside`
       margin-bottom: 0px;
     }
   }
+`
+
+export const AvatarContainer = styled.div`
+  position: relative;
+  width: 128px;
+  height: 128px;
+  margin-bottom: 16px;
+
+  @media (max-width: ${breakpoints.desktop}) {
+    width: 32px;
+    height: 32px;
+    margin-bottom: 0px;
+  }
+
+  &:hover .avatarOverlay {
+    opacity: 1;
+    cursor: pointer;
+  }
+
+  .avatarOverlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: 50%;
+  }
+
+  .editIcon {
+    color: #fff;
+  }
+`
+
+export const Avatar = styled.img`
+  border-radius: 50%;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 `
