@@ -7,6 +7,8 @@ import React, {
   useEffect
 } from 'react'
 
+import fetchWithAuth from '../../utils/fetchWithAuth'
+
 type User = {
   id: number
   email: string
@@ -20,6 +22,12 @@ interface AuthContextType {
   login: (email: string, password: string) => void
   logout: () => void
   isAuthenticated: boolean
+  register: (
+    firstName: string,
+    lastName: string,
+    email: string,
+    password: string
+  ) => void
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -42,11 +50,9 @@ const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
   useEffect(() => {
     const fetchUser = async () => {
       if (accessToken) {
-        const res = await fetch('http://127.0.0.1:8000/auth/users/me/', {
-          headers: {
-            Authorization: `Bearer ${accessToken}`
-          }
-        })
+        const res = await fetchWithAuth(
+          `${process.env.REACT_APP_API_URL}/auth/users/me/`
+        )
         const data = await res.json()
         setUser(data)
       }
@@ -56,31 +62,36 @@ const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
   }, [accessToken])
 
   const login = async (email: string, password: string) => {
-    const res = await fetch('http://127.0.0.1:8000/api/token/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        email: email,
-        password: password
+    try {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/token/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          email: email,
+          password: password
+        })
       })
-    })
 
-    const data = await res.json()
+      const data = await res.json()
 
-    if (res.status === 200) {
-      localStorage.setItem('access', data.access)
-      setAccessToken(data.access)
-      localStorage.setItem('refresh', data.refresh)
-      setRefreshToken(data.refresh)
-    } else {
-      localStorage.removeItem('access')
-      setAccessToken('')
-      localStorage.removeItem('refresh')
-      setRefreshToken('')
-      setUser(null)
-      throw new Error(data.error)
+      if (res.status === 200) {
+        localStorage.setItem('access', data.access)
+        setAccessToken(data.access)
+        localStorage.setItem('refresh', data.refresh)
+        setRefreshToken(data.refresh)
+      } else {
+        localStorage.removeItem('access')
+        setAccessToken('')
+        localStorage.removeItem('refresh')
+        setRefreshToken('')
+        setUser(null)
+        throw new Error(data.error)
+      }
+    } catch (error) {
+      console.error('Erro ao fazer login:', error)
+      throw error
     }
   }
 
@@ -93,8 +104,43 @@ const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
     setUser(null)
   }
 
+  const register = async (
+    firstName: string,
+    lastName: string,
+    email: string,
+    password: string
+  ) => {
+    try {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/auth/users/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          first_name: firstName,
+          last_name: lastName,
+          email: email,
+          password: password
+        })
+      })
+
+      const data = await res.json()
+
+      if (res.status === 201) {
+        return data
+      } else {
+        throw new Error(data.error || 'Erro ao registrar usuário')
+      }
+    } catch (error) {
+      console.error('Erro ao registrar usuário:', error)
+      throw error
+    }
+  }
+
   return (
-    <AuthContext.Provider value={{ user, login, logout, isAuthenticated }}>
+    <AuthContext.Provider
+      value={{ user, login, logout, register, isAuthenticated }}
+    >
       {children}
     </AuthContext.Provider>
   )

@@ -13,9 +13,11 @@ import Visibility from '@mui/icons-material/Visibility'
 import VisibilityOff from '@mui/icons-material/VisibilityOff'
 
 import * as S from './styles'
+import { useAuth } from '../../contexts/AuthContext'
 
 const RegistrationForm = () => {
   const navigate = useNavigate()
+  const { register } = useAuth()
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
   const [email, setEmail] = useState('')
@@ -36,26 +38,10 @@ const RegistrationForm = () => {
       setHasError(false)
       setErrorMessage('')
 
-      const response = await fetch('http://127.0.0.1:8000/auth/users/', {
-        method: 'POST',
-        body: JSON.stringify({
-          first_name: firstName,
-          last_name: lastName,
-          email: email,
-          password: password
-        }),
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
-
-      if (response.ok) {
-        const data = await response.json()
-        console.log(data)
-        setHasSuccess(true)
-        setCount(5)
-        handleRedirect()
-      }
+      await register(firstName, lastName, email, password)
+      setHasSuccess(true)
+      setCount(5)
+      handleRedirect()
     } catch (error) {
       error instanceof Error
         ? setErrorMessage(error.message)

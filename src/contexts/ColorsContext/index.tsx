@@ -1,5 +1,7 @@
 import React, { createContext, useState, ReactNode, FC, useEffect } from 'react'
 
+import fetchWithAuth from '../../utils/fetchWithAuth'
+
 interface ColorsContextType {
   page: number
   setPage: (n: number) => void
@@ -42,27 +44,11 @@ const ColorsProvider: FC<ColorsProviderProps> = ({ children }) => {
 
   const fetchPageData = async () => {
     try {
-      const accessToken = localStorage.getItem('access')
-      if (!accessToken) {
-        throw new Error('Token de acesso não encontrado')
-      }
-
-      const res = await fetch(
-        `http://127.0.0.1:8000/resources/?page=${page}&page_size=${perPage}`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`
-          }
-        }
+      const res = await fetchWithAuth(
+        `${process.env.REACT_APP_API_URL}/resources/?page=${page}&page_size=${perPage}`
       )
-
-      if (!res.ok) {
-        throw new Error('Falha ao buscar cores')
-      }
-
       const fetchedData: PageDataType = await res.json()
       setPageData(fetchedData)
-
       console.log(fetchedData)
     } catch (error) {
       console.error('Erro ao buscar dados:', error)
@@ -75,23 +61,10 @@ const ColorsProvider: FC<ColorsProviderProps> = ({ children }) => {
 
   const addColor = async (color: ColorWithoutId) => {
     try {
-      const accessToken = localStorage.getItem('access')
-      if (!accessToken) {
-        throw new Error('Token de acesso não encontrado')
-      }
-
-      const res = await fetch('http://127.0.0.1:8000/resources/', {
+      await fetchWithAuth(`${process.env.REACT_APP_API_URL}/resources/`, {
         method: 'POST',
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          'Content-Type': 'application/json'
-        },
         body: JSON.stringify(color)
       })
-
-      if (!res.ok) {
-        throw new Error('Falha ao adicionar cor')
-      }
       await fetchPageData()
     } catch (error) {
       console.error('Erro ao adicionar cor:', error)
@@ -100,21 +73,9 @@ const ColorsProvider: FC<ColorsProviderProps> = ({ children }) => {
 
   const deleteColor = async (id: number) => {
     try {
-      const accessToken = localStorage.getItem('access')
-      if (!accessToken) {
-        throw new Error('Token de acesso não encontrado')
-      }
-
-      const res = await fetch(`http://127.0.0.1:8000/resources/${id}/`, {
-        method: 'DELETE',
-        headers: {
-          Authorization: `Bearer ${accessToken}`
-        }
+      await fetchWithAuth(`${process.env.REACT_APP_API_URL}/resources/${id}/`, {
+        method: 'DELETE'
       })
-
-      if (!res.ok) {
-        throw new Error('Falha ao excluir cor')
-      }
       await fetchPageData()
     } catch (error) {
       console.error('Erro ao excluir cor:', error)
@@ -123,27 +84,11 @@ const ColorsProvider: FC<ColorsProviderProps> = ({ children }) => {
 
   const moveColor = async (id: number, direction: 'up' | 'down') => {
     try {
-      const accessToken = localStorage.getItem('access')
-      if (!accessToken) {
-        throw new Error('Token de acesso não encontrado')
-      }
-
       const endpoint = direction === 'up' ? 'move_up' : 'move_down'
-      const res = await fetch(
-        `http://127.0.0.1:8000/resources/${id}/${endpoint}/`,
-        {
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${accessToken}`
-          }
-        }
+      await fetchWithAuth(
+        `${process.env.REACT_APP_API_URL}/resources/${id}/${endpoint}/`,
+        { method: 'POST' }
       )
-
-      if (!res.ok) {
-        throw new Error(
-          `Falha ao mover cor para ${direction === 'up' ? 'cima' : 'baixo'}`
-        )
-      }
       await fetchPageData()
     } catch (error) {
       console.error(
@@ -155,23 +100,10 @@ const ColorsProvider: FC<ColorsProviderProps> = ({ children }) => {
 
   const editColor = async (id: number, color: ColorWithoutId) => {
     try {
-      const accessToken = localStorage.getItem('access')
-      if (!accessToken) {
-        throw new Error('Token de acesso não encontrado')
-      }
-
-      const res = await fetch(`http://127.0.0.1:8000/resources/${id}/`, {
+      await fetchWithAuth(`${process.env.REACT_APP_API_URL}/resources/${id}/`, {
         method: 'PUT',
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          'Content-Type': 'application/json'
-        },
         body: JSON.stringify(color)
       })
-
-      if (!res.ok) {
-        throw new Error('Falha ao editar cor')
-      }
       await fetchPageData()
     } catch (error) {
       console.error('Erro ao editar cor:', error)
