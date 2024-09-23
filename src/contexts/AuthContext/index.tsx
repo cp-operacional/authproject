@@ -28,6 +28,7 @@ interface AuthContextType {
     email: string,
     password: string
   ) => void
+  updateAvatar: (avatarFile: File) => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -137,9 +138,40 @@ const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
     }
   }
 
+  const updateAvatar = async (avatarFile: File) => {
+    const formData = new FormData()
+    formData.append('avatar', avatarFile)
+
+    try {
+      const res = await fetch(
+        `${process.env.REACT_APP_API_URL}/auth/users/update_avatar/`,
+        {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${accessToken}`
+          },
+          body: formData
+        }
+      )
+
+      if (!res.ok) {
+        throw new Error('Erro ao atualizar o avatar')
+      }
+
+      setUser((prevUser) =>
+        prevUser
+          ? { ...prevUser, avatar: URL.createObjectURL(avatarFile) }
+          : null
+      )
+    } catch (error) {
+      console.error('Erro ao atualizar o avatar:', error)
+      throw error
+    }
+  }
+
   return (
     <AuthContext.Provider
-      value={{ user, login, logout, register, isAuthenticated }}
+      value={{ user, login, logout, register, isAuthenticated, updateAvatar }}
     >
       {children}
     </AuthContext.Provider>
